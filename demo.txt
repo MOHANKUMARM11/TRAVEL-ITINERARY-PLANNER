@@ -1,0 +1,11 @@
+1)to post to github
+git add .
+git commit -m "your understanding"
+git push origin main
+
+2)to pull
+git pull origin main
+
+3)new user
+git clone https://github.com/MOHANKUMARM11/PassProjectExplorer.git
+
