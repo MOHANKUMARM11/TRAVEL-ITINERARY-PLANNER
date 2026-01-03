@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Trip</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dashboard">
+  <div class="container">
+    <h3>Travel Planner</h3>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="my-trips.html">My Trips</a>
+      <a href="city-search.html">Explore</a>
+      <a href="profile.html">Profile</a>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container dashboard-main">
+  <h1>Create Trip</h1>
+
+  <div class="auth-card" style="margin-top:20px;">
+    <form id="tripForm">
+      
+      <div class="form-group">
+        <label>Trip Name</label>
+        <input type="text" id="tripName" placeholder="Enter trip name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Start Date</label>
+        <input type="date" id="startDate" required>
+      </div>
+
+      <div class="form-group">
+        <label>End Date</label>
+        <input type="date" id="endDate" required>
+      </div>
+
+      <button class="btn btn-primary btn-block">Create Trip</button>
+    </form>
+  </div>
+</div>
+
+<script src="../assets/js/script.js"></script>
+
+<script>
+checkAuth();
+
+document.getElementById("tripForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const tripName = document.getElementById("tripName").value.trim();
+  const startDate = document.getElementById("startDate").value;
+  const endDate = document.getElementById("endDate").value;
+
+  if (!tripName || !startDate || !endDate) {
+    alert("All fields are required");
+    return;
+  }
+
+  if (new Date(endDate) < new Date(startDate)) {
+    alert("End date must be after start date");
+    return;
+  }
+
+  try {
+    const res = await apiFetch("/api/trips", {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        tripName,
+        startDate,
+        endDate
+      })
+    });
+
+    // Redirect to itinerary builder
+    window.location.href = `itinerary-builder.html?id=${res.trip._id}`;
+
+  } catch (err) {
+    alert(err.message);
+  }
+});
+</script>
+
+</body>
+</html>

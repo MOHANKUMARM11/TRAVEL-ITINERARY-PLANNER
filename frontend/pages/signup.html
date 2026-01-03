@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="auth-page">
+
+<div class="auth-card">
+  <h2>Create Account</h2>
+  <form id="signupForm">
+    <input id="name" placeholder="Name" required>
+    <input id="email" type="email" placeholder="Email" required>
+    <input id="password" type="password" placeholder="Password" required>
+    <button class="btn btn-primary btn-block">Signup</button>
+  </form>
+</div>
+
+<script src="../assets/js/script.js"></script>
+<script>
+signupForm.onsubmit = async e => {
+  e.preventDefault();
+  const res = await fetch(`${API_BASE_URL}/api/auth/signup`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({name:name.value,email:email.value,password:password.value})
+  });
+  const data = await res.json();
+  if(!res.ok) return alert(data.error);
+  localStorage.setItem("token",data.token);
+  window.location.href="dashboard.html";
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shared Itinerary</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="container dashboard-main">
+  <h1>Shared Trip Itinerary</h1>
+  <p>
+    This itinerary has been shared publicly for viewing and inspiration.
+  </p>
+
+  <div id="sharedTrip"></div>
+</div>
+
+<script src="../assets/js/script.js"></script>
+<script>
+const token = new URLSearchParams(window.location.search).get("token");
+
+async function loadSharedTrip() {
+  try {
+    const trip = await apiFetch(`/api/shared/${token}`);
+
+    sharedTrip.innerHTML = `
+      <h2>${trip.tripName}</h2>
+      <p><strong>Created by:</strong> ${trip.userId.name}</p>
+
+      <h3>Cities Covered</h3>
+      <ul>
+        ${trip.cities.map(c => `
+          <li>${c.cityId.name} (${c.cityId.country})</li>
+        `).join("")}
+      </ul>
+
+      <p>
+        This is a read-only itinerary.  
+        To customize it, create your own trip.
+      </p>
+    `;
+  } catch (err) {
+    sharedTrip.innerHTML = "<p>Invalid or private trip link.</p>";
+  }
+}
+
+loadSharedTrip();
+</script>
+
+</body>
+</html>

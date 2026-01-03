@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-dashboard">
+  <div class="container">
+    <h3>Travel Planner</h3>
+    <div class="nav-links">
+      <a class="active" href="dashboard.html">Dashboard</a>
+      <a href="my-trips.html">My Trips</a>
+      <a href="city-search.html">Explore</a>
+      <a href="profile.html">Profile</a>
+      
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container dashboard-main">
+  <div class="welcome-section">
+    <h1>Dashboard</h1>
+    <a href="create-trip.html" class="btn btn-primary">+ Plan New Trip</a>
+  </div>
+
+  <h3>Your Trips</h3>
+  <div id="tripsDiv" class="trips-grid"></div>
+</div>
+
+<script src="../assets/js/script.js"></script>
+<script>
+checkAuth();
+const tripsDiv = document.getElementById("tripsDiv");
+
+async function loadTrips() {
+  const trips = await apiFetch("/api/trips",{ headers:getAuthHeaders() });
+  if(trips.length === 0){
+    tripsDiv.innerHTML = "<p>No trips yet.</p>";
+    return;
+  }
+  tripsDiv.innerHTML = trips.map(t=>`
+    <div class="trip-card">
+      <div class="trip-card-content">
+        <h4>${t.tripName}</h4>
+        <p>${new Date(t.startDate).toDateString()}</p>
+        <a href="itinerary-view.html?id=${t._id}" class="btn btn-sm btn-primary">View</a>
+      </div>
+    </div>
+  `).join("");
+}
+loadTrips();
+</script>
+</body>
+</html>

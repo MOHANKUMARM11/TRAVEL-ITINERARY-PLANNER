@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Trips</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dashboard">
+  <div class="container">
+    <h3>Travel Planner</h3>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="my-trips.html" class="active">My Trips</a>
+      <a href="city-search.html">Explore</a>
+      <a href="profile.html">Profile</a>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container dashboard-main">
+  <h1>My Trips</h1>
+  <div id="tripsDiv" class="trips-grid"></div>
+</div>
+
+<script src="../assets/js/script.js"></script>
+<script>
+checkAuth();
+
+const tripsDiv = document.getElementById("tripsDiv");
+
+async function loadTrips() {
+  try {
+    const trips = await apiFetch("/api/trips", {
+      headers: getAuthHeaders()
+    });
+
+    if (trips.length === 0) {
+      tripsDiv.innerHTML = "<p>No trips created yet.</p>";
+      return;
+    }
+
+    tripsDiv.innerHTML = trips.map(trip => `
+      <div class="trip-card">
+        <div class="trip-card-content">
+          <h3>${trip.tripName}</h3>
+          <p>
+            ${new Date(trip.startDate).toDateString()} →
+            ${new Date(trip.endDate).toDateString()}
+          </p>
+          <a class="btn btn-sm btn-primary"
+             href="itinerary-view.html?id=${trip._id}">
+            View
+          </a>
+        </div>
+      </div>
+    `).join("");
+
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+loadTrips();
+</script>
+
+</body>
+</html>

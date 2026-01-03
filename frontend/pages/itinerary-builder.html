@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Build Itinerary</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dashboard">
+  <div class="container">
+    <h3>Travel Planner</h3>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="my-trips.html">My Trips</a>
+      <a href="city-search.html">Explore</a>
+      <a href="profile.html">Profile</a>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="container dashboard-main">
+
+  <h1>Build Itinerary</h1>
+  <p>Add cities & activities</p>
+
+  <div class="builder-container">
+
+    <!-- LEFT: ADD CITY -->
+    <div class="builder-sidebar">
+      <h3>Add City</h3>
+
+      <select id="citySelect"></select>
+      <input type="date" id="arrivalDate">
+      <input type="date" id="departureDate">
+
+      <button class="btn btn-primary btn-block" onclick="addCity()">
+        Add City
+      </button>
+    </div>
+
+    <!-- CENTER: CITIES IN TRIP -->
+    <div class="builder-main">
+      <h3>Trip Cities</h3>
+      <div id="tripCities"></div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="builder-sidebar-right">
+      <h3>Next</h3>
+      <a class="btn btn-secondary btn-block" href="my-trips.html">
+        Finish
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script src="../assets/js/script.js"></script>
+
+<script>
+checkAuth();
+
+const urlParams = new URLSearchParams(window.location.search);
+const tripId = urlParams.get("id");
+
+if (!tripId) {
+  alert("Trip ID missing");
+  window.location.href = "dashboard.html";
+}
+
+const citySelect = document.getElementById("citySelect");
+const tripCitiesDiv = document.getElementById("tripCities");
+
+/* LOAD ALL CITIES */
+async function loadCities() {
+  const cities = await apiFetch("/api/cities");
+  citySelect.innerHTML = cities.map(c =>
+    `<option value="${c._id}">${c.name} (${c.country})</option>`
+  ).join("");
+}
+
+/* LOAD TRIP DETAILS */
+async function loadTrip() {
+  const trip = await apiFetch(`/api/trips/${tripId}`, {
+    headers: getAuthHeaders()
+  });
+
+  if (trip.cities.length === 0) {
+    tripCitiesDiv.innerHTML = "<p>No cities added yet.</p>";
+    return;
+  }
+
+  tripCitiesDiv.innerHTML = trip.cities.map(c => `
+    <div class="city-item">
+      <strong>${c.cityId.name}</strong><br>
+      ${new Date(c.arrivalDate).toDateString()} →
+      ${new Date(c.departureDate).toDateString()}
+    </div>
+  `).join("");
+}
+
+/* ADD CITY TO TRIP */
+async function addCity() {
+  const cityId = citySelect.value;
+  const arrivalDate = document.getElementById("arrivalDate").value;
+  const departureDate = document.getElementById("departureDate").value;
+
+  if (!arrivalDate || !departureDate) {
+    alert("Select arrival and departure dates");
+    return;
+  }
+
+  await apiFetch(`/api/trips/${tripId}/cities`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({
+      cityId,
+      arrivalDate,
+      departureDate
+    })
+  });
+
+  loadTrip();
+}
+
+/* INIT */
+loadCities();
+loadTrip();
+</script>
+
+</body>
+</html>

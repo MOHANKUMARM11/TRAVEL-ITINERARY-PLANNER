@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trip Budget</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-dashboard">
+  <div class="container">
+    <h3>Travel Planner</h3>
+    <div class="nav-links">
+      <a href="my-trips.html">My Trips</a>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container dashboard-main">
+  <h1>Trip Budget</h1>
+  <p>
+    Estimate and manage your expenses to avoid going over budget.
+  </p>
+
+  <div class="auth-card">
+    <form id="budgetForm">
+      <input id="transport" type="number" placeholder="Transport Cost">
+      <input id="accommodation" type="number" placeholder="Accommodation Cost">
+      <input id="meals" type="number" placeholder="Meals Cost">
+      <input id="others" type="number" placeholder="Other Expenses">
+
+      <button class="btn btn-primary btn-block">Save Budget</button>
+    </form>
+
+    <div id="budgetResult" style="margin-top:15px;"></div>
+  </div>
+</div>
+
+<script src="../assets/js/script.js"></script>
+<script>
+checkAuth();
+
+const tripId = new URLSearchParams(window.location.search).get("id");
+
+budgetForm.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const data = {
+    transport: +transport.value || 0,
+    accommodation: +accommodation.value || 0,
+    meals: +meals.value || 0,
+    others: +others.value || 0
+  };
+
+  const res = await apiFetch(`/api/trips/${tripId}/budget`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data)
+  });
+
+  budgetResult.innerHTML = `
+    <h3>Total Estimated Cost: ₹${res.budget.total}</h3>
+    <p>Keep monitoring expenses during the trip.</p>
+  `;
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Explore Cities</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dashboard">
+  <div class="container">
+    <h3>Travel Planner</h3>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="my-trips.html">My Trips</a>
+      <a href="city-search.html" class="active">Explore</a>
+      <a href="profile.html">Profile</a>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container dashboard-main">
+  <h1>Explore Cities</h1>
+  <div id="citiesDiv" class="cities-grid-large"></div>
+</div>
+
+<script src="../assets/js/script.js"></script>
+<script>
+checkAuth();
+
+const citiesDiv = document.getElementById("citiesDiv");
+
+async function loadCities() {
+  try {
+    const cities = await apiFetch("/api/cities");
+
+    citiesDiv.innerHTML = cities.map(city => `
+      <div class="city-card-large">
+        <div class="city-card-content">
+          <h3>${city.name}</h3>
+          <p>${city.country}</p>
+          <p>Cost Index: ${city.costIndex}</p>
+        </div>
+      </div>
+    `).join("");
+
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+loadCities();
+</script>
+
+</body>
+</html>

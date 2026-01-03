@@ -1,0 +1,391 @@
+/* =========================================
+   GLOBAL RESET & BASE
+========================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* =========================================
+   NAVBAR
+========================================= */
+.navbar {
+  background: #1e293b;
+  color: #fff;
+  padding: 12px 0;
+}
+
+.navbar-dashboard {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links a,
+.nav-links button {
+  margin-left: 15px;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.nav-links a.active {
+  font-weight: bold;
+  border-bottom: 2px solid #38bdf8;
+}
+
+.btn-logout {
+  background: #ef4444;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: white;
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-secondary {
+  background: #64748b;
+  color: white;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-sm {
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.btn-large {
+  padding: 12px 20px;
+  font-size: 16px;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* =========================================
+   AUTH (LOGIN / SIGNUP)
+========================================= */
+.auth-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 350px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.auth-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: #dc2626;
+  margin: 10px 0;
+}
+
+.success-message {
+  color: #16a34a;
+}
+
+/* =========================================
+   DASHBOARD
+========================================= */
+.dashboard-main {
+  padding: 30px 0;
+}
+
+.welcome-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.stat-icon {
+  font-size: 28px;
+}
+
+/* =========================================
+   TRIP CARDS
+========================================= */
+.trips-grid,
+.trips-grid-full {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.trip-card,
+.trip-card-full {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.trip-card-image,
+.trip-card-image-full {
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+}
+
+.trip-card-content,
+.trip-card-details {
+  padding: 15px;
+}
+
+.trip-meta span {
+  display: block;
+  font-size: 13px;
+  color: #555;
+}
+
+/* =========================================
+   CITY & DESTINATION CARDS
+========================================= */
+.cities-grid-large,
+.destinations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.city-card-large,
+.destination-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.city-card-image-large,
+.destination-image {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+}
+
+.city-card-content,
+.destination-content {
+  padding: 15px;
+}
+
+.tag {
+  display: inline-block;
+  background: #e5e7eb;
+  padding: 3px 8px;
+  margin: 3px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+/* =========================================
+   ITINERARY BUILDER
+========================================= */
+.builder-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 20px;
+}
+
+.builder-sidebar,
+.builder-sidebar-right,
+.builder-main {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.city-item,
+.activity-item {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: red;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* =========================================
+   ITINERARY VIEW
+========================================= */
+.itinerary-header {
+  display: flex;
+  gap: 20px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.itinerary-cover {
+  width: 250px;
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+}
+
+.itinerary-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.activity-card {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.activity-card-image {
+  width: 120px;
+  height: 80px;
+  background-size: cover;
+  border-radius: 6px;
+}
+
+/* =========================================
+   MODALS
+========================================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* =========================================
+   UTILITIES
+========================================= */
+.loading-spinner {
+  text-align: center;
+  padding: 20px;
+  color: #64748b;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 900px) {
+  .builder-container {
+    grid-template-columns: 1fr;
+  }
+
+  .itinerary-header {
+    flex-direction: column;
+  }
+
+  .welcome-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Activities</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-dashboard">
+  <div class="container">
+    <h3>Travel Planner</h3>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="my-trips.html">My Trips</a>
+      <a href="profile.html">Profile</a>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container dashboard-main">
+  <h1>Add Activities</h1>
+
+  <select id="citySelect"></select>
+  <div id="activitiesDiv"></div>
+</div>
+
+<script src="../assets/js/script.js"></script>
+<script>
+checkAuth();
+
+const tripId = new URLSearchParams(window.location.search).get("id");
+const citySelect = document.getElementById("citySelect");
+const activitiesDiv = document.getElementById("activitiesDiv");
+
+async function loadCities() {
+  const trip = await apiFetch(`/api/trips/${tripId}`, { headers: getAuthHeaders() });
+  citySelect.innerHTML = trip.cities.map(c =>
+    `<option value="${c.cityId._id}">${c.cityId.name}</option>`
+  ).join("");
+  loadActivities();
+}
+
+async function loadActivities() {
+  const cityId = citySelect.value;
+  const activities = await apiFetch(`/api/activities?cityId=${cityId}`);
+
+  activitiesDiv.innerHTML = activities.map(a => `
+    <div class="activity-item">
+      <strong>${a.name}</strong> (${a.type})<br>
+      Cost: ${a.estimatedCost}
+      <button class="btn btn-sm btn-primary"
+        onclick="addActivity('${a._id}', '${cityId}', ${a.estimatedCost})">
+        Add
+      </button>
+    </div>
+  `).join("");
+}
+
+async function addActivity(activityId, cityId, cost) {
+  await apiFetch(`/api/trips/${tripId}/activities`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ activityId, cityId, cost })
+  });
+  alert("Activity added");
+}
+
+citySelect.addEventListener("change", loadActivities);
+loadCities();
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Itinerary View</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dashboard">
+  <div class="container">
+    <h3>Travel Planner</h3>
+    <div class="nav-links">
+      <a href="my-trips.html">My Trips</a>
+      <a href="dashboard.html">Dashboard</a>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container dashboard-main">
+
+  <h1>Trip Itinerary</h1>
+
+  <!-- Trip Header -->
+  <div id="tripHeader" class="itinerary-header"></div>
+
+  <!-- Cities & Activities -->
+  <div id="itineraryContent" class="itinerary-content"></div>
+
+  <!-- Budget Summary -->
+  <div id="budgetSummary" class="itinerary-content" style="margin-top:20px;"></div>
+
+</div>
+
+<script src="../assets/js/script.js"></script>
+<script>
+checkAuth();
+
+const tripId = new URLSearchParams(window.location.search).get("id");
+const tripHeader = document.getElementById("tripHeader");
+const itineraryContent = document.getElementById("itineraryContent");
+const budgetSummary = document.getElementById("budgetSummary");
+
+if (!tripId) {
+  alert("Trip not found");
+  window.location.href = "dashboard.html";
+}
+
+async function loadTrip() {
+  try {
+    const trip = await apiFetch(`/api/trips/${tripId}`, {
+      headers: getAuthHeaders()
+    });
+
+    /* ===== Trip Header ===== */
+    tripHeader.innerHTML = `
+      <div>
+        <h2>${trip.tripName}</h2>
+        <p>
+          ${new Date(trip.startDate).toDateString()} →
+          ${new Date(trip.endDate).toDateString()}
+        </p>
+      </div>
+    `;
+
+    /* ===== Cities & Activities ===== */
+    if (trip.cities.length === 0) {
+      itineraryContent.innerHTML = "<p>No cities added to this trip.</p>";
+    } else {
+      itineraryContent.innerHTML = trip.cities.map(city => `
+        <div style="margin-bottom:25px;">
+          <h3>${city.cityId.name}</h3>
+          <p>
+            ${new Date(city.arrivalDate).toDateString()} →
+            ${new Date(city.departureDate).toDateString()}
+          </p>
+
+          ${
+            trip.activities.filter(a =>
+              a.cityId && a.cityId._id === city.cityId._id
+            ).length === 0
+            ? "<p>No activities added.</p>"
+            : trip.activities
+                .filter(a => a.cityId._id === city.cityId._id)
+                .map(a => `
+                  <div class="activity-card">
+                    <div>
+                      <strong>${a.activityId.name}</strong><br>
+                      <small>Cost: ₹${a.cost || 0}</small>
+                    </div>
+                  </div>
+                `).join("")
+          }
+        </div>
+      `).join("");
+    }
+
+    /* ===== Budget Summary ===== */
+    const b = trip.budget;
+    budgetSummary.innerHTML = `
+      <h3>Budget Summary</h3>
+      <ul>
+        <li>Transport: ₹${b.transport}</li>
+        <li>Accommodation: ₹${b.accommodation}</li>
+        <li>Activities: ₹${b.activities}</li>
+        <li>Meals: ₹${b.meals}</li>
+        <li>Others: ₹${b.others}</li>
+      </ul>
+      <h4>Total Estimated Cost: ₹${b.total}</h4>
+    `;
+
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+loadTrip();
+</script>
+
+</body>
+</html>

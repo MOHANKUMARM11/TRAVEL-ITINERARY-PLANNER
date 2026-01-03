@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dashboard">
+  <div class="container">
+    <h3>Travel Planner</h3>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="my-trips.html">My Trips</a>
+      <a href="profile.html" class="active">Profile</a>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container dashboard-main">
+  <h1>User Profile</h1>
+  <p class="text-muted">
+    Manage your personal details and preferences used across the platform.
+  </p>
+
+  <div class="auth-card">
+    <form id="profileForm">
+      <label>Name</label>
+      <input id="name" placeholder="Your name" required>
+
+      <label>Email (read-only)</label>
+      <input id="email" disabled>
+
+      <button class="btn btn-primary btn-block">Update Profile</button>
+    </form>
+
+    <hr>
+
+    <p>
+      Deleting your account will permanently remove all trips and data.
+    </p>
+    <button class="btn btn-danger btn-block" onclick="deleteAccount()">
+      Delete Account
+    </button>
+  </div>
+</div>
+
+<script src="../assets/js/script.js"></script>
+<script>
+checkAuth();
+
+async function loadProfile() {
+  const user = await apiFetch("/api/users/profile", {
+    headers: getAuthHeaders()
+  });
+  name.value = user.name;
+  email.value = user.email;
+}
+
+profileForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  await apiFetch("/api/users/profile", {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ name: name.value })
+  });
+  alert("Profile updated successfully");
+});
+
+async function deleteAccount() {
+  if (!confirm("Are you sure? This cannot be undone.")) return;
+
+  await apiFetch("/api/users/profile", {
+    method: "DELETE",
+    headers: getAuthHeaders()
+  });
+  logout();
+}
+
+loadProfile();
+</script>
+
+</body>
+</html>
